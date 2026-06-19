@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HAPPY BIRTHDAY TO ME</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:#0c1446;
+  display:flex;align-items:center;justify-content:center;min-height:100vh;
+  font-family:'DM Sans',sans-serif;
+}
+
+.fb{width:100%;max-width:960px;background:#0c1446;display:flex;flex-direction:column;position:relative;overflow:hidden;border-radius:4px;}
+.fb-slides{flex:1;position:relative;min-height:500px;}
+
+/* Slides cross-fade slowly into each other instead of snapping. No flicker, no motion. */
+.slide{
+  position:absolute;inset:0;
+  display:grid;grid-template-columns:45% 55%;
+  opacity:0;pointer-events:none;
+  transition:opacity 1.1s ease-in-out;
+}
+.slide.active{opacity:1;pointer-events:auto;}
+
+.img-col{
+  background:#101c5c;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
+  border-right:1px solid #1c2a7a;position:relative;overflow:hidden;min-height:500px;
+}
+/* Soft, low-contrast image treatment — no harsh flicker between slides */
+.img-col img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.15) contrast(1.05);position:absolute;inset:0;}
+.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;height:100%;}
+.ph-icon{font-size:28px;color:#2e3da3;}
+.ph-hint{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#2e3da3;}
+
+.txt-col{background:#0e1850;padding:2.5rem 2rem 1.5rem;display:flex;flex-direction:column;justify-content:space-between;}
+.kicker{font-size:8px;letter-spacing:5px;text-transform:uppercase;color:#ffd23f;margin-bottom:.6rem;}
+.hed{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;line-height:1.05;color:#ff3b3b;margin-bottom:.6rem;text-shadow:0 0 16px rgba(255,59,59,.35);}
+.deck{font-size:11.5px;line-height:1.8;color:#aab4f5;font-weight:300;margin-bottom:1.25rem;max-width:300px;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.5rem;}
+.tag{font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 9px;border:1px solid #ffd23f;color:#ffd23f;}
+.cta{display:inline-block;background:#ff3b3b;color:#fff;font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:11px 22px;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:background .25s ease;}
+.cta:hover{background:#ffd23f;color:#0e1850;}
+.tiktok-note{font-size:9px;color:#5563b8;letter-spacing:1px;margin-top:.6rem;}
+
+.slide-foot{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid #1c2a7a;margin-top:auto;}
+.slide-num{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#5563b8;}
+.brand{font-family:'Playfair Display',serif;font-size:12px;color:#ffd23f;letter-spacing:2px;}
+
+.nav{background:#080d33;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid #1c2a7a;}
+.nav-btns{display:flex;gap:.5rem;}
+.nbtn{background:none;border:1px solid #2e3da3;color:#ffd23f;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:border-color .25s ease;}
+.nbtn:hover{border-color:#ff3b3b;}
+.ndots{display:flex;gap:6px;align-items:center;}
+.ndot{width:5px;height:5px;background:#2e3da3;border:none;cursor:pointer;padding:0;transition:background .3s ease;}
+.ndot.active{background:#ff3b3b;}
+.nav-brand{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#5563b8;}
+
+/* DJ playlist bar */
+.dj-bar{background:#080d33;padding:.6rem 1.5rem;display:flex;align-items:center;gap:.75rem;border-top:1px solid #1c2a7a;flex-wrap:wrap;}
+.dj-label{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#ffd23f;white-space:nowrap;}
+.dj-btn{background:none;border:1px solid #2e3da3;color:#aab4f5;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 12px;cursor:pointer;border-radius:20px;transition:.2s ease;display:flex;align-items:center;gap:5px;}
+.dj-btn:hover{border-color:#ff3b3b;color:#fff;}
+.dj-btn.playing{background:#ff3b3b;color:#fff;border-color:#ff3b3b;}
+.dj-track{font-size:9px;color:#fff;flex:1;min-width:120px;text-align:center;letter-spacing:.5px;}
+.dj-track.empty{color:#5563b8;font-style:italic;}
+
+@media(max-width:600px){
+  .slide{grid-template-columns:1fr;}
+  .img-col{min-height:260px;}
+  .txt-col{padding:1.5rem 1.25rem 1rem;}
+}
+
+/* Respect users who've asked their OS to reduce motion entirely */
+@media (prefers-reduced-motion: reduce){
+  .slide{transition:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="fb" id="fb" role="region" aria-label="Happy Birthday To Me superhero party">
+
+  <div class="fb-slides">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="s0">
+      <div class="img-col">
+        <!-- Replace the .ph block below with: <img src="your-image.jpg" alt="Look 01"> -->
+        <div class="ph">
+          <i class="ti ti-photo ph-icon" aria-hidden="true"></i>
+          <div class="ph-hint">Hero 01 · add photo</div>
+        </div>
+      </div>
+      <div class="txt-col">
+        <div>
+          <div class="kicker">Mission Briefing</div>
+          <div class="hed">HAPPY<br>BIRTHDAY<br>TO ME</div>
+          <div class="deck">Today, one hero levels up. Suit on, cape ready — it's time to save the day with cake.</div>
+          <div class="tags"><span class="tag">Hero Mode: ON</span><span class="tag">Level Up</span></div>
+          <a href="#" class="cta">Enter The Party</a>
+          <div class="tiktok-note">Tap next to keep the mission going</div>
+        </div>
+        <div class="slide-foot">
+          <span class="slide-num">01 / 05</span>
+          <span class="brand">HBTM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="s1">
+      <div class="img-col">
+        <div class="ph">
+          <i class="ti ti-photo ph-icon" aria-hidden="true"></i>
+          <div class="ph-hint">Hero 02 · add photo</div>
+        </div>
+      </div>
+      <div class="txt-col">
+        <div>
+          <div class="kicker">Power Up</div>
+          <div class="hed">Cape:<br>Equipped.<br>Confidence: 100%.</div>
+          <div class="deck">Every hero needs a power source. Today, mine is cake, presents, and being one year stronger.</div>
+          <div class="tags"><span class="tag">Super Strength</span><span class="tag">Birthday Buff</span></div>
+          <a href="#" class="cta">Enter The Party</a>
+          <div class="tiktok-note">Tap next to keep the mission going</div>
+        </div>
+        <div class="slide-foot">
+          <span class="slide-num">02 / 05</span>
+          <span class="brand">HBTM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="s2">
+      <div class="img-col">
+        <div class="ph">
+          <i class="ti ti-photo ph-icon" aria-hidden="true"></i>
+          <div class="ph-hint">Hero 03 · add photo</div>
+        </div>
+      </div>
+      <div class="txt-col">
+        <div>
+          <div class="kicker">Squad Assemble</div>
+          <div class="hed">Calling All<br>Heroes &amp;<br>Sidekicks.</div>
+          <div class="deck">Every great hero needs a team. Thanks for assembling for the mission — games, snacks, and a whole lot of celebrating.</div>
+          <div class="tags"><span class="tag">Team Up</span><span class="tag">Mission: Fun</span></div>
+          <a href="#" class="cta">Enter The Party</a>
+          <div class="tiktok-note">Tap next to keep the mission going</div>
+        </div>
+        <div class="slide-foot">
+          <span class="slide-num">03 / 05</span>
+          <span class="brand">HBTM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="s3">
+      <div class="img-col">
+        <div class="ph">
+          <i class="ti ti-photo ph-icon" aria-hidden="true"></i>
+          <div class="ph-hint">Hero 04 · add photo</div>
+        </div>
+      </div>
+      <div class="txt-col">
+        <div>
+          <div class="kicker">Special Skill</div>
+          <div class="hed">Cake-Cutting<br>Superpower<br>Activated.</div>
+          <div class="deck">Trained for this exact moment my whole life. Candles out, wish made, cake sliced — heroic stuff.</div>
+          <div class="tags"><span class="tag">Wish Granted</span><span class="tag">Cake Mode</span></div>
+          <a href="#" class="cta">Enter The Party</a>
+          <div class="tiktok-note">Tap next to keep the mission going</div>
+        </div>
+        <div class="slide-foot">
+          <span class="slide-num">04 / 05</span>
+          <span class="brand">HBTM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="s4">
+      <div class="img-col">
+        <div class="ph">
+          <i class="ti ti-photo ph-icon" aria-hidden="true"></i>
+          <div class="ph-hint">Hero 05 · add photo</div>
+        </div>
+      </div>
+      <div class="txt-col">
+        <div>
+          <div class="kicker">Victory Lap</div>
+          <div class="hed">Mission<br>Complete.<br>Hero Status.</div>
+          <div class="deck">Another year of saving the day. Thanks for being part of the story — same hero, next chapter.</div>
+          <div class="tags"><span class="tag">Achievement Unlocked</span><span class="tag">Forever Hero</span></div>
+          <a href="#" class="cta">Enter The Party</a>
+          <div class="tiktok-note">DJ booth is below — go wild</div>
+        </div>
+        <div class="slide-foot">
+          <span class="slide-num">05 / 05</span>
+          <span class="brand">HBTM</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /fb-slides -->
+
+  <div class="nav">
+    <div class="nav-btns">
+      <button class="nbtn" id="prev" aria-label="Previous look">&#8249;</button>
+      <button class="nbtn" id="next" aria-label="Next look">&#8250;</button>
+    </div>
+    <div class="ndots" id="ndots"></div>
+    <div class="nav-brand">Happy Birthday To Me</div>
+  </div>
+
+  <div class="dj-bar">
+    <span class="dj-label">🎧 DJ Booth</span>
+    <button class="dj-btn" id="djPlay">▶ Play</button>
+    <button class="dj-btn" id="djSkip">⏭ Skip</button>
+    <button class="dj-btn" id="djShuffle">🔀 Shuffle</button>
+    <span class="dj-track empty" id="djTrack">Add your tracks to start the playlist</span>
+  </div>
+
+</div><!-- /fb -->
+
+<script>
+const N = 5;
+let cur = 0, timer;
+
+const slides = Array.from({length: N}, (_, i) => document.getElementById('s' + i));
+const dotsC  = document.getElementById('ndots');
+
+const dots = Array.from({length: N}, (_, i) => {
+  const d = document.createElement('button');
+  d.className = 'ndot' + (i === 0 ? ' active' : '');
+  d.setAttribute('aria-label', 'Look ' + (i + 1));
+  d.onclick = () => go(i);
+  dotsC.appendChild(d);
+  return d;
+});
+
+// Simple cross-fade: just toggle the opacity class, CSS transition handles the rest smoothly.
+function go(n) {
+  slides[cur].classList.remove('active');
+  dots[cur].classList.remove('active');
+  cur = (n + N) % N;
+  slides[cur].classList.add('active');
+  dots[cur].classList.add('active');
+  clearInterval(timer);
+  timer = setInterval(() => go(cur + 1), 7000);
+}
+
+document.getElementById('prev').onclick = () => go(cur - 1);
+document.getElementById('next').onclick = () => go(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') go(cur + 1);
+  if (e.key === 'ArrowLeft')  go(cur - 1);
+});
+timer = setInterval(() => go(cur + 1), 7000);
+
+// ── DJ BOOTH ───────────────────────────────────────────────────────────────
+// Add your party track file paths below, relative to this HTML file.
+// Example: 'audio/track-01.mp3', 'audio/track-02.mp3'
+// Leave the array empty and the booth just shows a friendly placeholder.
+const TRACKS = [
+  // 'audio/birthday-banger-01.mp3',
+  // 'audio/birthday-banger-02.mp3',
+  // 'audio/birthday-banger-03.mp3',
+];
+
+const djPlayBtn   = document.getElementById('djPlay');
+const djSkipBtn   = document.getElementById('djSkip');
+const djShuffleBtn= document.getElementById('djShuffle');
+const djTrackEl   = document.getElementById('djTrack');
+
+let playlist = TRACKS.slice();
+let pIdx = 0;
+const player = new Audio();
+player.volume = 0.6;
+
+function trackName(path) {
+  return path.split('/').pop().replace(/\.[a-z0-9]+$/i, '').replace(/[-_]/g, ' ');
+}
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function loadTrack(idx, autoplay) {
+  if (!playlist.length) return;
+  pIdx = (idx + playlist.length) % playlist.length;
+  player.src = playlist[pIdx];
+  djTrackEl.textContent = '🎵 ' + trackName(playlist[pIdx]);
+  djTrackEl.classList.remove('empty');
+  if (autoplay) {
+    player.play().catch(() => {});
+    djPlayBtn.textContent = '⏸ Pause';
+    djPlayBtn.classList.add('playing');
+  }
+}
+
+if (!playlist.length) {
+  djTrackEl.textContent = 'Add your tracks to start the playlist';
+  djPlayBtn.disabled = true;
+  djSkipBtn.disabled = true;
+  djShuffleBtn.disabled = true;
+} else {
+  loadTrack(0, false);
+}
+
+djPlayBtn.onclick = () => {
+  if (!playlist.length) return;
+  if (player.paused) {
+    player.play().catch(() => {});
+    djPlayBtn.textContent = '⏸ Pause';
+    djPlayBtn.classList.add('playing');
+  } else {
+    player.pause();
+    djPlayBtn.textContent = '▶ Play';
+    djPlayBtn.classList.remove('playing');
+  }
+};
+
+djSkipBtn.onclick = () => loadTrack(pIdx + 1, !player.paused || djPlayBtn.classList.contains('playing'));
+
+djShuffleBtn.onclick = () => {
+  playlist = shuffleArray(playlist);
+  loadTrack(0, !player.paused || djPlayBtn.classList.contains('playing'));
+};
+
+player.addEventListener('ended', () => loadTrack(pIdx + 1, true));
+
+</script>
+
+</body>
+</html>
